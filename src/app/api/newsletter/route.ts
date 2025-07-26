@@ -1,53 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextRequest, NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
 
-    console.log('📧 Newsletter subscription request received for:', email);
+    console.log("📧 Newsletter subscription request received for:", email);
 
     // Validate email
     if (!email) {
-      return NextResponse.json(
-        { error: 'Email is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Please enter a valid email address' },
+        { error: "Please enter a valid email address" },
         { status: 400 }
       );
     }
 
     // Create transporter
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
       },
     });
 
-    console.log('📧 Verifying email transporter...');
-    
+    console.log("📧 Verifying email transporter...");
+
     // Verify transporter configuration
     try {
       await transporter.verify();
-      console.log('✅ Email transporter configuration is valid');
+      console.log("✅ Email transporter configuration is valid");
     } catch (verifyError) {
-      console.error('❌ Email transporter verification failed:', verifyError);
+      console.error("❌ Email transporter verification failed:", verifyError);
       throw verifyError;
     }
 
     // Admin notification email (to you)
     const adminMailOptions = {
       from: process.env.GMAIL_USER,
-      to: 'studiomicrosite@gmail.com',
-      subject: '📧 New Newsletter Subscription - Microsite Studio',
+      to: "studiomicrosite@gmail.com",
+      subject: "📧 New Newsletter Subscription - Microsite Studio",
       html: `
         <!DOCTYPE html>
         <html>
@@ -112,7 +109,7 @@ export async function POST(req: NextRequest) {
     const welcomeMailOptions = {
       from: process.env.GMAIL_USER,
       to: email,
-      subject: '🎉 Welcome to Microsite Studio Newsletter!',
+      subject: "🎉 Welcome to Microsite Studio Newsletter!",
       html: `
         <!DOCTYPE html>
         <html>
@@ -211,39 +208,41 @@ export async function POST(req: NextRequest) {
       `,
     };
 
-    console.log('📧 Sending admin notification email...');
-    
+    console.log("📧 Sending admin notification email...");
+
     // Send admin notification
     try {
       await transporter.sendMail(adminMailOptions);
-      console.log('✅ Admin notification email sent successfully');
+      console.log("✅ Admin notification email sent successfully");
     } catch (adminEmailError) {
-      console.error('❌ Failed to send admin notification email:', adminEmailError);
+      console.error(
+        "❌ Failed to send admin notification email:",
+        adminEmailError
+      );
       throw adminEmailError;
     }
 
-    console.log('📧 Sending welcome email to subscriber...');
-    
+    console.log("📧 Sending welcome email to subscriber...");
+
     // Send welcome email to subscriber
     try {
       await transporter.sendMail(welcomeMailOptions);
-      console.log('✅ Welcome email sent successfully');
+      console.log("✅ Welcome email sent successfully");
     } catch (welcomeEmailError) {
-      console.error('❌ Failed to send welcome email:', welcomeEmailError);
+      console.error("❌ Failed to send welcome email:", welcomeEmailError);
       throw welcomeEmailError;
     }
 
-    console.log('✅ Newsletter subscription processed successfully');
+    console.log("✅ Newsletter subscription processed successfully");
 
     return NextResponse.json(
-      { message: 'Successfully subscribed to newsletter!' },
+      { message: "Successfully subscribed to newsletter!" },
       { status: 200 }
     );
-
   } catch (error) {
-    console.error('❌ Newsletter subscription error:', error);
+    console.error("❌ Newsletter subscription error:", error);
     return NextResponse.json(
-      { error: 'Failed to process newsletter subscription. Please try again.' },
+      { error: "Failed to process newsletter subscription. Please try again." },
       { status: 500 }
     );
   }

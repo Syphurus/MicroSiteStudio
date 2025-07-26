@@ -6,7 +6,6 @@ import {
   Instagram,
   Twitter,
   Linkedin,
-  Youtube,
   Mail,
   Sparkles,
   Lock,

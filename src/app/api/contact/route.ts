@@ -178,14 +178,14 @@ export async function POST(request: NextRequest) {
     // Verify transporter configuration
     try {
       await transporter.verify();
-      console.log('✅ Email transporter configuration is valid');
+      console.log("✅ Email transporter configuration is valid");
     } catch (verifyError) {
-      console.error('❌ Email transporter verification failed:', verifyError);
-      throw new Error('Email configuration invalid');
+      console.error("❌ Email transporter verification failed:", verifyError);
+      throw new Error("Email configuration invalid");
     }
 
     // Send email to admin (you)
-    console.log('📧 Sending admin email...');
+    console.log("📧 Sending admin email...");
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: "studiomicrosite@gmail.com",
@@ -193,17 +193,17 @@ export async function POST(request: NextRequest) {
       html: getAdminEmailTemplate(data),
       replyTo: data.email,
     });
-    console.log('✅ Admin email sent successfully');
+    console.log("✅ Admin email sent successfully");
 
     // Send thank you email to client
-    console.log('📧 Sending thank you email to client...');
+    console.log("📧 Sending thank you email to client...");
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: data.email,
       subject: "Thank You for Contacting Microsite Studio! 🚀",
       html: getClientEmailTemplate(data.name),
     });
-    console.log('✅ Thank you email sent successfully');
+    console.log("✅ Thank you email sent successfully");
 
     return NextResponse.json(
       { message: "Emails sent successfully" },
@@ -211,20 +211,20 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("❌ Error sending email:", error);
-    
+
     // More detailed error for debugging
     if (error instanceof Error) {
       console.error("Error details:", {
         message: error.message,
         stack: error.stack,
-        name: error.name
+        name: error.name,
       });
     }
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "Failed to send email",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

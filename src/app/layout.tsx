@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import CleanNavigation from "@/components/sections/CleanNavigation";
+import {
+  WebVitals,
+  Analytics,
+  ErrorReporting,
+} from "@/components/monitoring/ProductionMonitoring";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +35,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Microsite Studio" }],
   creator: "Microsite Studio",
   publisher: "Microsite Studio",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000"
+  ),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -65,11 +73,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -80,6 +89,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${poppins.variable} antialiased`}>
+        <WebVitals />
+        <Analytics />
+        <ErrorReporting />
         <CleanNavigation />
         {children}
       </body>

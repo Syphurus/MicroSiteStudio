@@ -6,7 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "preview": "npm run build && npm run start",
+    "analyze": "ANALYZE=true npm run build",
+    "clean": "rm -rf .next out dist",
+    "test:build": "npm run clean && npm run build"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

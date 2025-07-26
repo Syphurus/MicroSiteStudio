@@ -3,18 +3,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import {
-  Rocket,
-  Dumbbell,
-  Crown,
-  Smartphone,
-  Mail,
-  Wrench,
-  Flame,
-  ShoppingCart,
-  Link,
-  MapPin,
-} from "lucide-react";
+import { Rocket, Dumbbell, Crown, Flame, MapPin } from "lucide-react";
 import { scrollToSection } from "@/lib/utils";
 
 // Pricing configuration by region
@@ -195,20 +184,10 @@ const pricingPlansTemplate = [
   },
 ];
 
-const addOns = [
-  { name: "Mobile App Development", price: "$8,999", icon: Smartphone },
-  { name: "Advanced E-commerce", price: "$2,999", icon: ShoppingCart },
-  { name: "Marketing Automation", price: "$1,999", icon: Mail },
-  { name: "Custom Integrations", price: "$3,999", icon: Link },
-  { name: "Monthly Maintenance", price: "$299", recurring: true, icon: Wrench },
-];
-
 export default function CleanPricing() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [showAddOns, setShowAddOns] = useState(false);
   const [userCountry, setUserCountry] = useState<string>("DEFAULT");
-  const [locationLoading, setLocationLoading] = useState(true);
   const [locationDetected, setLocationDetected] = useState(false);
 
   // Geolocation detection
@@ -226,10 +205,8 @@ export default function CleanPricing() {
             setLocationDetected(true);
           }
         }
-      } catch (error) {
+      } catch {
         console.log("Location detection failed, using default pricing");
-      } finally {
-        setLocationLoading(false);
       }
     };
 
@@ -243,7 +220,10 @@ export default function CleanPricing() {
 
   const pricingPlans = pricingPlansTemplate.map((plan) => ({
     ...plan,
-    price: formatPrice(currentPricing[plan.priceKey], currentPricing.symbol),
+    price: formatPrice(
+      currentPricing[plan.priceKey] as number,
+      currentPricing.symbol
+    ),
     currency: currentPricing.currency,
   }));
 
